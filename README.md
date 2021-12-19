@@ -5,7 +5,7 @@ Python klasar til að fletta upp viðskiptamanni og vörunúmeri í dkplús og s
 
 Það sem vantar í þetta er svona almennilegt encryption fyrir notandanafn og lykilorð.
 
-
 Dependencies:
+
 pip install requests
 pip install dateparser
