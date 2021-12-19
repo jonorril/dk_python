@@ -1,20 +1,38 @@
 import dkplus
+import logging
+from requests.auth import HTTPBasicAuth
 
-cust = dkplus.Customer("3005678359")
-print(cust.endpoint())
+# Change from logging.INFO to logging.DEBUG
+# to get more information.
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s %(message)s',
+                    handlers=[logging.FileHandler("logg.log"),
+                              logging.StreamHandler()])
 
-  # prod = Product("0001")
-  # if (prod.valid()):
-  #   print("Valid product")
+auth = HTTPBasicAuth('demo@dkplus.is', 'Demo123')
 
-  #   inv = Invoice(cust, prod)
-  #   if (inv.createInvoice(2, 500, False)):
-  #     print("Invoice created")
-  #   else:
-  #     print("Invoice creation failed")
+cust = dkplus.Customer(auth)
+if (cust.loadCustomer("1710794709")):
 
-  # else:
-  #   print("product not valid")
+  paym = dkplus.Payments(auth)
+  if (paym.getpayment(8)):
 
-#else:
-# print("customer not valid")
+    prodlist = []
+    prodlist.append(
+      dkplus.Product(auth, "0001",     2, 2323)
+    )
+    prodlist.append(
+      dkplus.Product(auth, "29874443", 1, 1500)
+    )
+
+    inv = dkplus.Invoice(auth, cust, paym)
+    if inv.createInvoice(prodlist, True):
+      logging.info("Invoice no. "+inv.getInvoiceNo()+" created.")
+    else:
+      logging.info(inv.getMessage())
+
+  else:
+    logging.info(paym.getMessage())
+
+else:
+  logging.info(cust.getMessage())
